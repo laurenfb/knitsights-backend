@@ -1,4 +1,10 @@
-#
+# ignore config
+config.py
+
+# ignore pyc
+*.pyc
+
+# ignore local venv
 venv/
 
 # From https://github.com/github/gitignore/blob/master/Global/macOS.gitignore
