@@ -1,14 +1,28 @@
 from flask import Flask, jsonify, abort, make_response
 from ravelry_api_wrapper import *
+from config import USERNAME, PASSWORD
+from flask.ext.httpauth import HTTPBasicAuth
 
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
+
+@auth.get_password
+def get_password(username):
+    if username == USERNAME:
+        return PASSWORD
+    return None
+
+@auth.error_handler
+def unauthorized():
+    return make_response(jsonify({'error': 'unauthorized access'}), 401)
 
 @app.route('/')
 def index():
     return "Hello, World!"
 
 @app.route('/api/get_projects/<username>', methods=['GET'])
+@auth.login_required
 def get_projects(username):
     projects = APIWrapper.get_current_user_projects(username)
     if type(projects) is int:
