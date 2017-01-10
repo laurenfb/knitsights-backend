@@ -7,4 +7,7 @@ class APIWrapper:
     @staticmethod
     def get_current_user_projects(current_username):
         r = requests.get(URL + 'projects/' + current_username + '/list.json', auth=(RAVELRY_ACCESS_KEY, RAVELRY_PERSONAL_KEY))
-        return r.json()
+        if r.status_code == 200:
+            return r.json()["projects"]
+        else:
+            return r.status_code
