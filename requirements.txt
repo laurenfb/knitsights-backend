@@ -4,6 +4,7 @@ cryptography==1.7.1
 enum34==1.1.6
 Flask==0.12
 Flask-HTTPAuth==3.2.1
+Flask-SQLAlchemy==2.1
 idna==2.2
 ipaddress==1.0.17
 itsdangerous==0.24
@@ -14,4 +15,5 @@ pycparser==2.17
 pyOpenSSL==16.2.0
 requests==2.12.4
 six==1.10.0
+SQLAlchemy==1.1.4
 Werkzeug==0.11.15
