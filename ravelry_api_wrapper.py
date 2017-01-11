@@ -11,3 +11,42 @@ class APIWrapper:
             return r.json()["projects"]
         else:
             return r.status_code
+
+
+    def sort_projects(projects):
+        for project in projects:
+
+
+
+    def get_pattern_type(pattern_category):
+        name = pattern_category["name"].lower()
+        if name == "other":
+            category = deal_with_other(pattern_category)
+        elif name in HOBBIES:
+            category = "toys and hobbies"
+        elif name in HANDS:
+            category = "gloves / mittens"
+        elif name in NECK:
+            category = "misc neckwear"
+        elif name in HEADWEAR:
+            category = "misc headwear"
+        elif name in HOME:
+            category = "home items"
+        elif name in PET_ITEMS:
+            category = "pet items"
+        elif name in KNIT_COMPONENTS:
+            category = "knit components"
+        elif name in MISC_SOCKS:
+            category = "socks"
+        elif name in CAT_W_PARENT:
+            if pattern_category["parent"]["name"].lower() in TOP_LEVEL:
+                category = name
+            else:
+                category = pattern_category["parent"]["name"].lower()
+        else:
+            category = name
+        return category
+
+    def deal_with_other(pattern_category):
+        parent = pattern_category['parent']['name'].lower()
+        return "other"
