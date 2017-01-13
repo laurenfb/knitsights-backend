@@ -1,11 +1,21 @@
 from flask import Flask, jsonify, abort, make_response
-from ravelry_api_wrapper import *
-from config import USERNAME, PASSWORD
-from flask.ext.httpauth import HTTPBasicAuth
-
+from flask_sqlalchemy import SQLAlchemy
+from flask_httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
+app.config.from_pyfile('config.py')
+db = SQLAlchemy(app)
 auth = HTTPBasicAuth()
+
+import models
+from ravelry_api_wrapper import *
+from config import USERNAME, PASSWORD
+# from __init__ import app, auth
+# app.config.from_pyfile('config.py')
+# db = SQLAlchemy(app)
+# auth = HTTPBasicAuth()
+
+# from app import models
 
 @auth.get_password
 def get_password(username):
@@ -34,6 +44,6 @@ def get_projects(username):
 def not_found(error):
     return make_response(jsonify({'error': 'Not Found'}), 404)
 
-
-if __name__ == '__main__':
-    app.run(debug=True) # this will be false on production
+#
+# if __name__ == '__main__':
+#     app.run(debug=True) # this will be false on production
