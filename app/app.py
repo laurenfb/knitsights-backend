@@ -1,7 +1,16 @@
 from flask import Flask, jsonify, abort, make_response
+from flask_sqlalchemy import SQLAlchemy
+from flask_httpauth import HTTPBasicAuth
+
+app = Flask(__name__)
+app.config.from_pyfile('config.py')
+db = SQLAlchemy(app)
+auth = HTTPBasicAuth()
+
+import models
 from ravelry_api_wrapper import *
 from config import USERNAME, PASSWORD
-from __init__ import app, auth
+# from __init__ import app, auth
 # app.config.from_pyfile('config.py')
 # db = SQLAlchemy(app)
 # auth = HTTPBasicAuth()
