@@ -2,9 +2,13 @@ from flask import Flask, jsonify, abort, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPBasicAuth
 
+from flask.ext.heroku import Heroku
+
+
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
+heroku = Heroku(app)
 auth = HTTPBasicAuth()
 
 import models
