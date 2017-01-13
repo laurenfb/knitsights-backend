@@ -29,7 +29,6 @@ class Pattern(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     category = db.Column(db.String(100))
-    rav_id = db.Column(db.Integer)
 
     projects = db.relationship('Project', backref='pattern', lazy='dynamic')
 
