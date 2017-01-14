@@ -1,5 +1,5 @@
-from config import *
 import requests
+from config import RAVELRY_ACCESS_KEY, RAVELRY_PERSONAL_KEY
 
 URL = 'https://api.ravelry.com/'
 
