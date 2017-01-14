@@ -1,9 +1,6 @@
 # ignore env
 .env
 
-# ignore config
-config.py
-
 # ignore pyc
 *.pyc
 
