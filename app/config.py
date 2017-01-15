@@ -13,7 +13,7 @@ PASSWORD = os.environ['PASSWORD']
 RAVELRY_ACCESS_KEY = os.environ['RAVELRY_ACCESS_KEY']
 RAVELRY_PERSONAL_KEY = os.environ['RAVELRY_PERSONAL_KEY']
 
-DATABASE_URL = os.environ['DATABASE_URL']
+SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
 
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
@@ -47,3 +47,6 @@ PET_ITEMS = ["accessory", "bedding", "clothing", "other", "toys"]
 KNIT_COMPONENTS = ["afghan block", "applique / embellishment", "button", "chart", "edging", "floral block", "frog", "insertion", "other", "stitch pattern", "tutorial"]
 # "socks"
 MISC_SOCKS = ["booties", "legwarmers", "slippers", "socks", "spats"]
+
+
+SQLALCHEMY_TRACK_MODIFICATIONS = False
