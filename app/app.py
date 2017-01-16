@@ -35,7 +35,7 @@ def index():
 @app.route('/api/get_projects/<username>', methods=['GET'])
 @auth.login_required
 def get_projects(username):
-    projects = APIWrapper.get_current_user_projects(username)
+    projects = APIWrapper.import_user(username)
     if type(projects) is int:
         # will return error code if there is one, so we'll use the flask error handler here.
         abort(projects)

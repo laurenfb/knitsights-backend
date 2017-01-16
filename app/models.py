@@ -5,7 +5,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     email = db.Column(db.String(), unique = True)
-    photo_url = db.Column(db.String(100))
+    photo_url = db.Column(db.String())
     imported = db.Column(db.Boolean, default = False)
 
     projects = db.relationship('Project', backref='user', lazy='dynamic')
@@ -29,7 +29,6 @@ class Pattern(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     category = db.Column(db.String(100))
-
     projects = db.relationship('Project', backref='pattern', lazy='dynamic')
 
     def __repr__(self):
@@ -38,8 +37,9 @@ class Pattern(db.Model):
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
-    photo_url = db.Column(db.String(100))
+    photo_url = db.Column(db.String())
     time_in_days = db.Column(db.Integer)
+    rav_id = db.Column(db.Integer)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cluster_id = db.Column(db.Integer, db.ForeignKey('cluster.id'))
