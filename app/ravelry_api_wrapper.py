@@ -2,6 +2,7 @@ import requests
 from config import *
 from app import db
 from models import *
+from datetime import date, timedelta, datetime
 
 URL = 'https://api.ravelry.com/'
 
@@ -154,7 +155,22 @@ class APIWrapper:
 
     @staticmethod
     def calc_time_in_days(project):
-        return 10
+        beginning = project["started"]
+        end = project["completed"]
+        beg_obj = datetime.strptime(beginning, '%Y/%m/%d').date()
+        end_obj = datetime.strptime(end, '%Y/%m/%d').date()
+        between = (end_obj - beg_obj).days
+        return between
+
+for project in laurenprojects["projects"]:
+    print project["name"]
+    print APIWrapper.calc_time_in_days(project)
+
+# projects = Project.query.all()
+# for project in projects:
+#     db.session.delete(project)
+# db.session.commit()
+# print projects
 
 # APIWrapper.import_user("laureneliz")
 # APIWrapper.sort_projects(laurenprojects["projects"], 1)
