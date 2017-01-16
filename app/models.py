@@ -40,6 +40,7 @@ class Project(db.Model):
     name = db.Column(db.String(64))
     photo_url = db.Column(db.String(100))
     time_in_days = db.Column(db.Integer)
+    rav_id = db.Column(db.Integer)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cluster_id = db.Column(db.Integer, db.ForeignKey('cluster.id'))
