@@ -35,6 +35,7 @@ class APIWrapper:
         for project in projects:
             # project must be finished. 2 is Rav's project_status_id for finshed. 1 is WIP, 3 is hibernating, 4 is frogged, in case that matters later.
             # also, the project needs to not already exist in the database.
+            print project["name"]
             if project["project_status_id"] == 2 and not APIWrapper.is_already_saved(project):
                 # it will either have a pattern, or not have a pattern. deal with the projects that don't belong to a pattern first.
                 if project["pattern_name"] is None: # json conversion  in requests makes None into None
@@ -44,7 +45,7 @@ class APIWrapper:
         # then return a list of clusters with projects as lists inside of those.
         clusters = Cluster.query.filter_by(user_id = userID).all()
         for cluster in clusters:
-            to_return.append({cluster.name: Project.query.filter_by(cluster_id = cluster.id).all()})
+            to_return.append({cluster.name: [project for project in Project.query.filter_by(cluster_id = cluster.id).all() if project.time_in_days is not None]})
         return to_return
 
     @staticmethod
@@ -77,7 +78,8 @@ class APIWrapper:
         pattern = Pattern.query.filter_by(id = pattern_id).first()
         if pattern is None:
             pattern = APIWrapper.single_pattern_call(pattern_id)
-            db.session.add(pattern)
+            if type(pattern) is not int: # returns error code if it doesn't go through.
+                db.session.add(pattern)
         # pattern is already in the database
         else:
             # check to see if there is a cluster with that name under the user's name. cluster names are based on pattern categories.
@@ -89,27 +91,29 @@ class APIWrapper:
                 db.session.add(cluster)
                 db.session.commit()
             # now the cluster does exist, even if I just had to make it, so use that cluster ID to make the project.
-            new_project = Project(name = project["name"], photo_url = project["first_photo"]["square_url"], time_in_days = APIWrapper.calc_time_in_days(project), user_id = userID, cluster_id = cluster.id, pattern_id = pattern.id, rav_id = project["id"])
-            print new_project
+            new_project = Project(name = project["name"], photo_url = APIWrapper.photo_check(project), time_in_days = APIWrapper.calc_time_in_days(project), user_id = userID, cluster_id = cluster.id, pattern_id = pattern.id, rav_id = project["id"])
             db.session.add(new_project)
         db.session.commit()
 
     @staticmethod
     def single_pattern_call(pattern_id):
         r = requests.get(URL + "patterns/" + str(pattern_id) + ".json", auth=(RAVELRY_ACCESS_KEY, RAVELRY_PERSONAL_KEY))
-        if len(r.json()["pattern"]["pattern_categories"]) > 0:
-            category = APIWrapper.get_pattern_type(r.json()["pattern"]["pattern_categories"][0])
+        if r.status_code == 200:
+            if len(r.json()["pattern"]["pattern_categories"]) > 0:
+                category = APIWrapper.get_pattern_type(r.json()["pattern"]["pattern_categories"][0])
+            else:
+                category = "misc"
+            pattern = Pattern(id = pattern_id, name = r.json()["pattern"]["name"], category = category)
+            return pattern
         else:
-            category = "misc"
-        pattern = Pattern(id = pattern_id, name = r.json()["pattern"]["name"], category = category)
-        return pattern
+            return r.status_code
 
 
     @staticmethod
     def get_pattern_type(pattern_category):
         name = pattern_category["name"].lower()
         if name == "other":
-            category = deal_with_other(pattern_category)
+            category = APIWrapper.deal_with_other(pattern_category)
         elif name in HOBBIES:
             category = "toys and hobbies"
         elif name in HANDS:
@@ -176,4 +180,4 @@ class APIWrapper:
             return project["first_photo"]["square_url"]
 
 
-APIWrapper.import_user("laureneliz")
+# APIWrapper.import_user("laureneliz")
