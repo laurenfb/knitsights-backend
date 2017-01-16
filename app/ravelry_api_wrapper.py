@@ -27,13 +27,14 @@ class APIWrapper:
 
     @staticmethod
     def sort_projects(projects, userID):
-        ### @TODO this is 100% non fucntional rn, but need to get the projects as they show up and save them in the database. also save user, and clusters.
+        # I want the projects to come back as an array.
         to_return = []
         for project in projects:
             # project must be finished. 2 is Rav's project_status_id for finshed. 1 is WIP, 3 is hibernating, 4 is frogged, in case that matters later.
-            if project["project_status_id"] == 2:
+            # also, the project needs to not already exist in the database.
+            if project["project_status_id"] == 2 and not APIWrapper.is_already_saved(project):
                 # it will either have a pattern, or not have a pattern. deal with the projects that don't belong to a pattern first.
-                if project["pattern_name"] is None: # json conversion  in requests makes null into None
+                if project["pattern_name"] is None: # json conversion  in requests makes None into None
                     APIWrapper.sort_proj_no_pattern(project, userID)
                 else:
                     APIWrapper.sort_proj_with_pattern(project, userID)
@@ -42,6 +43,14 @@ class APIWrapper:
         for cluster in clusters:
             to_return.append({cluster.name: Project.query.filter_by(cluster_id = cluster.id).all()})
         return to_return
+
+    @staticmethod
+    def is_already_saved(project):
+        database_project = Project.query.filter_by(rav_id = project["id"]).first()
+        if database_project is None:
+            return False
+        else:
+            return True
 
     @staticmethod
     def sort_proj_no_pattern(project, userID):
@@ -53,7 +62,7 @@ class APIWrapper:
             db.session.add(misc_cluster)
             db.session.commit()
             # now the misc cluster is saved, so it has an ID. use that to make a new project in the database, using the cluster's ID
-            project = Project(name = project["name"], photo_url = project["first_photo"]["square_url"], time_in_days = calc_time_in_days(project), user_id = userID, cluster_id = misc_cluster.id, pattern_id = None)
+            project = Project(name = project["name"], photo_url = project["first_photo"]["square_url"], time_in_days = calc_time_in_days(project), user_id = userID, cluster_id = misc_cluster.id, pattern_id = None, rav_id = project["id"])
             db.session.add(project)
         db.session.commit()
 
@@ -77,7 +86,7 @@ class APIWrapper:
                 db.session.add(cluster)
                 db.session.commit()
             # now the cluster does exist, even if I just had to make it, so use that cluster ID to make the project.
-            new_project = Project(name = project["name"], photo_url = project["first_photo"]["square_url"], time_in_days = APIWrapper.calc_time_in_days(project), user_id = userID, cluster_id = cluster.id, pattern_id = pattern.id)
+            new_project = Project(name = project["name"], photo_url = project["first_photo"]["square_url"], time_in_days = APIWrapper.calc_time_in_days(project), user_id = userID, cluster_id = cluster.id, pattern_id = pattern.id, rav_id = project["id"])
             print new_project
             db.session.add(new_project)
         db.session.commit()
