@@ -28,7 +28,7 @@ class Cluster(db.Model):
 class Pattern(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
-    category = db.Column(db.String(100))
+    category = db.Column(db.String())
 
     projects = db.relationship('Project', backref='pattern', lazy='dynamic')
 
@@ -38,7 +38,7 @@ class Pattern(db.Model):
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
-    photo_url = db.Column(db.String(100))
+    photo_url = db.Column(db.String())
     time_in_days = db.Column(db.Integer)
     rav_id = db.Column(db.Integer)
 
