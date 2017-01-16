@@ -17,12 +17,14 @@ class APIWrapper:
 
         if r.status_code == 200:
             if user is None:
-                user = User(name = current_username, email = "not sure how we're getting this", photo_url = user_info.json()["user"]["large_photo_url"], imported = True)
+                if user_info.json()["user"]["large_photo_url"] is None:
+                    photo_url = "http://placebeyonce.com/400-400"
+                else:
+                    photo_url = user_info.json()["user"]["large_photo_url"]
+                user = User(name = current_username, email = "not sure how we're getting this", photo_url = photo_url, imported = True)
                 db.session.add(user)
                 db.session.commit()
-            # return {"clusters": APIWrapper.sort_projects(r.json()["projects"], user.id)} #user.id is available after the user has been saved.
-            # print r.json()["projects"]
-            return r.json()["projects"]
+            return {"clusters": APIWrapper.sort_projects(r.json()["projects"], user.id)} #user.id is available after the user has been saved.
         else:
             return r.status_code
 
@@ -63,7 +65,7 @@ class APIWrapper:
             db.session.add(misc_cluster)
             db.session.commit()
             # now the misc cluster is saved, so it has an ID. use that to make a new project in the database, using the cluster's ID
-            project = Project(name = project["name"], photo_url = project["first_photo"]["square_url"], time_in_days = calc_time_in_days(project), user_id = userID, cluster_id = misc_cluster.id, pattern_id = None, rav_id = project["id"])
+            project = Project(name = project["name"], photo_url = APIWrapper.photo_check(project), time_in_days = calc_time_in_days(project), user_id = userID, cluster_id = misc_cluster.id, pattern_id = None, rav_id = project["id"])
             db.session.add(project)
         db.session.commit()
 
@@ -157,22 +159,21 @@ class APIWrapper:
     def calc_time_in_days(project):
         beginning = project["started"]
         end = project["completed"]
-        beg_obj = datetime.strptime(beginning, '%Y/%m/%d').date()
-        end_obj = datetime.strptime(end, '%Y/%m/%d').date()
-        between = (end_obj - beg_obj).days
-        return between
+        # if they didn't set a date, it will be None.
+        if beginning is None or end is None:
+            return None
+        else:
+            beg_obj = datetime.strptime(beginning, '%Y/%m/%d').date()
+            end_obj = datetime.strptime(end, '%Y/%m/%d').date()
+            between = (end_obj - beg_obj).days
+            return between
 
-for project in laurenprojects["projects"]:
-    print project["name"]
-    print APIWrapper.calc_time_in_days(project)
+    @staticmethod
+    def photo_check(project):
+        if project["first_photo"] is None:
+            return "http://placebeyonce.com/250-250"
+        else:
+            return project["first_photo"]["square_url"]
 
-# projects = Project.query.all()
-# for project in projects:
-#     db.session.delete(project)
-# db.session.commit()
-# print projects
 
-# APIWrapper.import_user("laureneliz")
-# APIWrapper.sort_projects(laurenprojects["projects"], 1)
-# for project in laurenprojects["projects"]:
-#     print project["project_status_id"]
+APIWrapper.import_user("laureneliz")
