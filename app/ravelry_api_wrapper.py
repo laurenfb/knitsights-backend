@@ -24,7 +24,9 @@ class APIWrapper:
                 user = User(name = current_username, email = "not sure how we're getting this", photo_url = photo_url, imported = True)
                 db.session.add(user)
                 db.session.commit()
-            return {"clusters": APIWrapper.sort_projects(r.json()["projects"], user.id)} #user.id is available after the user has been saved.
+            return_json = {"clusters": APIWrapper.sort_projects(r.json()["projects"], user.id)} #user.id is available after the user has been saved.
+            # print return_json
+            return return_json
         else:
             return r.status_code
 
@@ -45,7 +47,7 @@ class APIWrapper:
         # then return a list of clusters with projects as lists inside of those.
         clusters = Cluster.query.filter_by(user_id = userID).all()
         for cluster in clusters:
-            to_return.append({cluster.name: [project for project in Project.query.filter_by(cluster_id = cluster.id).all() if project.time_in_days is not None]})
+            to_return.append({cluster.name: [project.as_dict() for project in Project.query.filter_by(cluster_id = cluster.id).all() if project.time_in_days is not None]})
         return to_return
 
     @staticmethod
@@ -178,6 +180,3 @@ class APIWrapper:
             return "http://placebeyonce.com/250-250"
         else:
             return project["first_photo"]["square_url"]
-
-
-# APIWrapper.import_user("laureneliz")
