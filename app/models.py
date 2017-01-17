@@ -1,7 +1,8 @@
 from app import db
+from as_dict import AsDict
 
 
-class User(db.Model):
+class User(db.Model, AsDict):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     email = db.Column(db.String(), unique = True)
@@ -14,7 +15,7 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.name)
 
-class Cluster(db.Model):
+class Cluster(db.Model, AsDict):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     avg_days = db.Column(db.Integer)
@@ -25,7 +26,7 @@ class Cluster(db.Model):
     def __repr__(self):
         return '<Cluster %r>' % (self.name)
 
-class Pattern(db.Model):
+class Pattern(db.Model, AsDict):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     category = db.Column(db.String(100))
@@ -34,7 +35,7 @@ class Pattern(db.Model):
     def __repr__(self):
         return '<Pattern %r>' % (self.name)
 
-class Project(db.Model):
+class Project(db.Model, AsDict):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     photo_url = db.Column(db.String())
