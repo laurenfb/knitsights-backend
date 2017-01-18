@@ -37,7 +37,7 @@ class APIWrapper:
         for project in projects:
             # project must be finished. 2 is Rav's project_status_id for finshed. 1 is WIP, 3 is hibernating, 4 is frogged, in case that matters later.
             # also, the project needs to not already exist in the database.
-            print project["name"]
+            # print project["name"]
             if project["project_status_id"] == 2 and not APIWrapper.is_already_saved(project):
                 # it will either have a pattern, or not have a pattern. deal with the projects that don't belong to a pattern first.
                 if project["pattern_name"] is None: # json conversion  in requests makes None into None
@@ -67,9 +67,9 @@ class APIWrapper:
             misc_cluster = Cluster(name = "misc", user_id = userID, avg_days = None)
             db.session.add(misc_cluster)
             db.session.commit()
-            # now the misc cluster is saved, so it has an ID. use that to make a new project in the database, using the cluster's ID
-            project = Project(name = project["name"], photo_url = APIWrapper.photo_check(project), time_in_days = calc_time_in_days(project), user_id = userID, cluster_id = misc_cluster.id, pattern_id = None, rav_id = project["id"])
-            db.session.add(project)
+        # now the misc cluster is saved, so it has an ID. use that to make a new project in the database, using the cluster's ID
+        project = Project(name = project["name"], photo_url = APIWrapper.photo_check(project), time_in_days = APIWrapper.calc_time_in_days(project), user_id = userID, cluster_id = misc_cluster.id, pattern_id = None, rav_id = project["id"])
+        db.session.add(project)
         db.session.commit()
 
     @staticmethod
