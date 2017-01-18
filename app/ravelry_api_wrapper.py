@@ -47,7 +47,7 @@ class APIWrapper:
         # then return a list of clusters with projects as lists inside of those.
         clusters = Cluster.query.filter_by(user_id = userID).all()
         for cluster in clusters:
-            to_return.append({cluster.name: [project.as_dict() for project in Project.query.filter_by(cluster_id = cluster.id).all() if project.time_in_days is not None]})
+            to_return.append({"name": cluster.name, "projects": [project.as_dict() for project in Project.query.filter_by(cluster_id = cluster.id).all() if project.time_in_days is not None]})
         return to_return
 
     @staticmethod
