@@ -33,7 +33,7 @@ def index():
     return "Hello, World!"
 
 @app.route('/api/get_projects/<username>', methods=['GET'])
-@auth.login_required
+# @auth.login_required
 def get_projects(username):
     projects = APIWrapper.import_user(username)
     if type(projects) is int:
