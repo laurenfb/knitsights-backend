@@ -1,6 +1,3 @@
-# ignore config
-config.py
-=======
 # ignore env
 .env
 
