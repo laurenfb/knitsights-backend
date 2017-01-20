@@ -13,7 +13,7 @@ from ravelry_api_wrapper import *
 from config import USERNAME, PASSWORD
 
 def add_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = 'https://laurenfb.github.io'
+    response.headers['Access-Control-Allow-Origin'] = '*'
     return response
 
 @auth.get_password
