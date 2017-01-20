@@ -1,14 +1,32 @@
-from config import *
 import requests
+from config import *
+from app import db
+from models import *
+from datetime import date, timedelta, datetime
 
 URL = 'https://api.ravelry.com/'
 
 class APIWrapper:
     @staticmethod
-    def get_current_user_projects(current_username):
+    def import_user(current_username):
         r = requests.get(URL + 'projects/' + current_username + '/list.json', auth=(RAVELRY_ACCESS_KEY, RAVELRY_PERSONAL_KEY))
+
+        user_info = requests.get(URL + "current_user.json", auth=(RAVELRY_ACCESS_KEY, RAVELRY_PERSONAL_KEY))
+
+        user = User.query.filter_by(name = current_username).first()
+
         if r.status_code == 200:
-            return r.json()["projects"]
+            if user is None:
+                if user_info.json()["user"]["large_photo_url"] is None:
+                    photo_url = "http://placebeyonce.com/400-400"
+                else:
+                    photo_url = user_info.json()["user"]["large_photo_url"]
+                user = User(name = current_username, email = "not sure how we're getting this", photo_url = photo_url, imported = True)
+                db.session.add(user)
+                db.session.commit()
+            return_json = {"clusters": APIWrapper.sort_projects(r.json()["projects"], user.id)} #user.id is available after the user has been saved.
+            # print return_json
+            return return_json
         else:
             return r.status_code
 
@@ -95,7 +113,7 @@ class APIWrapper:
             return pattern
         else:
             return r.status_code
-
+            
     @staticmethod
     def get_pattern_type(pattern_category):
         name = pattern_category["name"].lower()
