@@ -105,15 +105,15 @@ class APIWrapper:
                 category = APIWrapper.get_pattern_type(r.json()["pattern"]["pattern_categories"][0])
             else:
                 category = "misc"
-            if r.json()["pattern"]["name"] is None:
-                name = r.json()["pattern"]["permalink"]
+            if r.json()["pattern"]["name"] is None or r.json()["pattern"]["name"].lower() is "none":
+                name = r.json()["pattern"]["permalink"].lower()
             else:
                 name = r.json()["pattern"]["name"]
             pattern = Pattern(id = pattern_id, name = name, category = category)
             return pattern
         else:
             return r.status_code
-            
+
     @staticmethod
     def get_pattern_type(pattern_category):
         name = pattern_category["name"].lower()
