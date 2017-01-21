@@ -78,9 +78,18 @@ class APIWrapper:
         pattern_id = project["pattern_id"]
         # check to see if that pattern is in the database. if it's not, call the Rav API and put it in the database.
         pattern = Pattern.query.filter_by(id = pattern_id).first()
+
+        print "pattern before logic: "
+        print pattern
+
         if pattern is None:
+            print "pattern is none"
+            print pattern
+            print pattern_id
             pattern = APIWrapper.single_pattern_call(pattern_id)
-            if type(pattern) is not int: # returns error code if it doesn't go through.
+            print "pattern after we get it from the API"
+            print pattern
+            if isinstance(pattern, Pattern): # returns error code if it doesn't go through.
                 db.session.add(pattern)
         # pattern is already in the database
         else:
@@ -105,10 +114,12 @@ class APIWrapper:
                 category = APIWrapper.get_pattern_type(r.json()["pattern"]["pattern_categories"][0])
             else:
                 category = "misc"
-            if r.json()["pattern"]["name"] is None or r.json()["pattern"]["name"].lower() is "none":
+
+            if r.json()["pattern"]["name"] is None:
                 name = r.json()["pattern"]["permalink"].lower()
             else:
                 name = r.json()["pattern"]["name"]
+
             pattern = Pattern(id = pattern_id, name = name, category = category)
             return pattern
         else:
