@@ -30,13 +30,15 @@ class Pattern(db.Model, AsDict):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     category = db.Column(db.String(100))
+    rav_id = db.Column(db.Integer)
+
     projects = db.relationship('Project', backref='pattern', lazy='dynamic')
 
     def __repr__(self):
         return '<Pattern %r>' % (self.name)
 
 class Project(db.Model, AsDict):
-    id = db.Column(db.Integer, primary_key = True, autoincrement = False)
+    id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     photo_url = db.Column(db.String())
     time_in_days = db.Column(db.Integer)

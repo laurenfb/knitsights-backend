@@ -83,12 +83,7 @@ class APIWrapper:
         print pattern
 
         if pattern is None:
-            print "pattern is none"
-            print pattern
-            print pattern_id
             pattern = APIWrapper.single_pattern_call(pattern_id)
-            print "pattern after we get it from the API"
-            print pattern
             if isinstance(pattern, Pattern): # returns error code if it doesn't go through.
                 db.session.add(pattern)
         # pattern is already in the database
