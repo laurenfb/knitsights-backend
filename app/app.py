@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, abort, make_response
+from flask import Flask, jsonify, abort, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPBasicAuth
 import os
@@ -12,8 +12,11 @@ import models
 from ravelry_api_wrapper import *
 from config import USERNAME, PASSWORD
 
-def add_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
+def add_headers(referer, response):
+    if referer in ACCEPTABLE_REFERERS:
+        response.headers['Access-Control-Allow-Origin'] = referer
+    else:
+        response = make_response(jsonify({'error': 'unauthorized access'}), 401)
     return response
 
 @auth.get_password
@@ -34,18 +37,15 @@ def index():
 @app.route('/api/get_projects/<username>', methods=['GET'])
 # @auth.login_required
 def get_projects(username):
+    referer = request.environ['HTTP_REFERER'][:-1]
     projects = APIWrapper.import_user(username)
     if type(projects) is int:
         # will return error code if there is one, so we'll use the flask error handler here.
         abort(projects)
     response = make_response(jsonify(projects))
-    return add_headers(response)
+    return add_headers(referer, response)
 
 @app.errorhandler(404)
 def not_found(error):
     response = make_response(jsonify({'error': 'Not Found'}), 404)
     return add_headers(response)
-
-#
-# if __name__ == '__main__':
-#     app.run(debug=True) # this will be false on production

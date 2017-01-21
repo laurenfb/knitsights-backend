@@ -50,3 +50,5 @@ MISC_SOCKS = ["booties", "legwarmers", "slippers", "socks", "spats"]
 
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+ACCEPTABLE_REFERERS = ['http://localhost:8081', 'https://laurenfb.github.io']
