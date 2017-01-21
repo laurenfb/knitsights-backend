@@ -77,17 +77,14 @@ class APIWrapper:
         #  get the project's pattern id,
         pattern_id = project["pattern_id"]
         # check to see if that pattern is in the database. if it's not, call the Rav API and put it in the database.
-        pattern = Pattern.query.filter_by(id = pattern_id).first()
+        pattern = Pattern.query.filter_by(rav_id = pattern_id).first()
 
-        print "pattern before logic: "
-        print pattern
-
-        if pattern is None:
+        if pattern is None: # then it is not already in the db
             pattern = APIWrapper.single_pattern_call(pattern_id)
             if isinstance(pattern, Pattern): # returns error code if it doesn't go through.
                 db.session.add(pattern)
-        # pattern is already in the database
-        else:
+
+        else: # this means that the pattern is already in the database
             # check to see if there is a cluster with that name under the user's name. cluster names are based on pattern categories.
             cluster = Cluster.query.filter_by(user_id = userID, name = pattern.category).first()
             # if there is not, make the cluster and give the the appropriate name
@@ -115,7 +112,7 @@ class APIWrapper:
             else:
                 name = r.json()["pattern"]["name"]
 
-            pattern = Pattern(id = pattern_id, name = name, category = category)
+            pattern = Pattern(rav_id = pattern_id, name = name, category = category)
             return pattern
         else:
             return r.status_code
