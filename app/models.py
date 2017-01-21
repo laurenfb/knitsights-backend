@@ -36,7 +36,7 @@ class Pattern(db.Model, AsDict):
         return '<Pattern %r>' % (self.name)
 
 class Project(db.Model, AsDict):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement = False)
     name = db.Column(db.String(64))
     photo_url = db.Column(db.String())
     time_in_days = db.Column(db.Integer)
