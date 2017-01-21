@@ -13,6 +13,10 @@ from ravelry_api_wrapper import *
 from config import USERNAME, PASSWORD
 
 def add_headers(referer, response):
+    print referer
+    if referer[-1] == "/":
+        referer = referer[:-1]
+        print referer
     if referer in ACCEPTABLE_REFERERS:
         response.headers['Access-Control-Allow-Origin'] = referer
     else:
@@ -37,7 +41,12 @@ def index():
 @app.route('/api/get_projects/<username>', methods=['GET'])
 # @auth.login_required
 def get_projects(username):
-    referer = request.environ['HTTP_REFERER'][:-1]
+    if 'HTTP_REFERER' in request.environ:
+        print "it's in!"
+        referer = request.environ['HTTP_REFERER']
+    else:
+        print "hi it's not in"
+        referer = 'http://localhost:8081'
     projects = APIWrapper.import_user(username)
     if type(projects) is int:
         # will return error code if there is one, so we'll use the flask error handler here.
