@@ -12,13 +12,14 @@ import models
 from ravelry_api_wrapper import *
 from config import USERNAME, PASSWORD
 
-def add_headers(referer, response):
-    print referer
-    if referer[-1] == "/":
-        referer = referer[:-1]
-        print referer
-    if referer in ACCEPTABLE_REFERERS:
-        response.headers['Access-Control-Allow-Origin'] = referer
+def add_headers(origin, response):
+    # print origin
+    if origin[-1] == "/":
+        origin = origin[:-1]
+        # print origin
+    if origin in ACCEPTABLE_ORIGINS:
+        # if origin ==
+        response.headers['Access-Control-Allow-Origin'] = origin
     else:
         response = make_response(jsonify({'error': 'unauthorized access'}), 401)
     return response
@@ -41,18 +42,19 @@ def index():
 @app.route('/api/get_projects/<username>', methods=['GET'])
 # @auth.login_required
 def get_projects(username):
-    if 'HTTP_REFERER' in request.environ:
-        print "it's in!"
-        referer = request.environ['HTTP_REFERER']
+    # print request.environ
+    if 'HTTP_ORIGIN' in request.environ:
+        # print "it's in!"
+        origin = request.environ['HTTP_ORIGIN']
     else:
-        print "hi it's not in"
-        referer = 'http://localhost:8081'
+        # print "hi it's not in"
+        origin = 'http://localhost:8081'
     projects = APIWrapper.import_user(username)
     if type(projects) is int:
         # will return error code if there is one, so we'll use the flask error handler here.
         abort(projects)
     response = make_response(jsonify(projects))
-    return add_headers(referer, response)
+    return add_headers(origin, response)
 
 @app.errorhandler(404)
 def not_found(error):
