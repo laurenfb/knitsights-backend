@@ -10,6 +10,7 @@ auth = HTTPBasicAuth()
 
 import models
 from ravelry_api_wrapper import *
+from db_interfacer import *
 from config import USERNAME, PASSWORD
 
 def add_headers(origin, response):
@@ -24,6 +25,13 @@ def add_headers(origin, response):
         response = make_response(jsonify({'error': 'unauthorized access'}), 401)
     return response
 
+def get_origin(request):
+    if 'HTTP_ORIGIN' in request.environ:
+        origin = request.environ['HTTP_ORIGIN']
+    else:
+        origin = 'http://localhost:8081'
+    return origin
+
 @auth.get_password
 def get_password(username):
     if username == USERNAME:
@@ -32,23 +40,18 @@ def get_password(username):
 
 @auth.error_handler
 def unauthorized():
+    origin = request.environ['HTTP_ORIGIN']
     response = make_response(jsonify({'error': 'unauthorized access'}), 401)
-    return add_headers(response)
+    return add_headers(origin, response)
 
 @app.route('/')
 def index():
     return "Hello, World!"
 
-@app.route('/api/get_projects/<username>', methods=['GET'])
+@app.route('/api/projects/<username>', methods=['GET'])
 # @auth.login_required
 def get_projects(username):
-    # print request.environ
-    if 'HTTP_ORIGIN' in request.environ:
-        # print "it's in!"
-        origin = request.environ['HTTP_ORIGIN']
-    else:
-        # print "hi it's not in"
-        origin = 'http://localhost:8081'
+    origin = get_origin(request)
     projects = APIWrapper.import_user(username)
     if type(projects) is int:
         # will return error code if there is one, so we'll use the flask error handler here.
@@ -56,7 +59,34 @@ def get_projects(username):
     response = make_response(jsonify(projects))
     return add_headers(origin, response)
 
+@app.route('/api/projects/<username>', methods=['PUT'])
+def update_projects(username):
+    user = User.query.filter_by(name = username).first()
+    origin = get_origin(request)
+    if user is None:
+        response = make_response(jsonify({'error': 'resource not found'}), 404)
+    else:
+        response = DBInterfacer.take_in_projects(request)
+        response = make_response(jsonify(response), 200)
+    return add_headers(origin, response)
+
+@app.route('/api/project/<username>/delete', methods=['DELETE'])
+def delete_project(username):
+    user = User.query.filter_by(name = username).first()
+    origin = get_origin(request)
+    if user is None:
+        response = make_response(jsonify({'error': 'resource not found'}), 404)
+    else:
+        response = DBInterfacer.archive_project(request.get_json())
+    # again there's surely a better way to do this, but TOO LATE
+    if isinstance(response, int):
+        abort(response)
+    else:
+        response = make_response(jsonify(response), 200)
+    return add_headers(origin, response)
+
 @app.errorhandler(404)
 def not_found(error):
-    response = make_response(jsonify({'error': 'Not Found'}), 404)
-    return add_headers(response)
+    origin = get_origin(request)
+    response = make_response(jsonify({'error': 'resource not found'}), 404)
+    return add_headers(origin, response)
