@@ -66,7 +66,7 @@ def update_projects(username):
     if user is None:
         response = make_response(jsonify({'error': 'resource not found'}), 404)
     else:
-        print request.environ
+        print request.get_json()
         response = DBInterfacer.take_in_projects(request)
         response = make_response(jsonify(response))
     return add_headers(origin, response)
@@ -78,10 +78,10 @@ def delete_project(username):
     if user is None:
         response = make_response(jsonify({'error': 'resource not found'}), 404)
     else:
-        print request
-        # response = DBInterfacer.archive_project(request)
-        # response = make_response(jsonify(response))
-    # return add_headers(origin, response)
+        print request.get_json()
+        response = DBInterfacer.archive_project(request.get_json())
+        response = make_response(jsonify(response))
+    return add_headers(origin, response)
 
 @app.errorhandler(404)
 def not_found(error):

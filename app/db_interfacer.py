@@ -9,4 +9,10 @@ class DBInterfacer:
 
     @staticmethod
     def archive_project(project):
-        return {'hi': 'success!'}
+        print project['name']
+        project = Project.query.filter_by(id = project['id']).first()
+        if project is None:
+            response = 404
+        else:
+            return {'hi': 'success!'}
+        return response

@@ -43,6 +43,7 @@ class Project(db.Model, AsDict):
     photo_url = db.Column(db.String())
     time_in_days = db.Column(db.Integer)
     rav_id = db.Column(db.Integer)
+    archived = db.Column(db.Boolean, default = False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cluster_id = db.Column(db.Integer, db.ForeignKey('cluster.id'))
