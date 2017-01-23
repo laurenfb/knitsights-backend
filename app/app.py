@@ -66,9 +66,8 @@ def update_projects(username):
     if user is None:
         response = make_response(jsonify({'error': 'resource not found'}), 404)
     else:
-        print request.get_json()
         response = DBInterfacer.take_in_projects(request)
-        response = make_response(jsonify(response))
+        response = make_response(jsonify(response), 200)
     return add_headers(origin, response)
 
 @app.route('/api/project/<username>/delete', methods=['DELETE'])
@@ -83,7 +82,7 @@ def delete_project(username):
     if isinstance(response, int):
         abort(response)
     else:
-        response = make_response(jsonify(response))
+        response = make_response(jsonify(response), 200)
     return add_headers(origin, response)
 
 @app.errorhandler(404)
