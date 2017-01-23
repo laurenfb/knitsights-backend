@@ -59,7 +59,32 @@ def get_projects(username):
     response = make_response(jsonify(projects))
     return add_headers(origin, response)
 
+@app.route('/api/projects/<username>', methods=['PUT'])
+def update_projects(username):
+    user = User.query.filter_by(name = username).first()
+    origin = get_origin(request)
+    if user is None:
+        response = make_response(jsonify({'error': 'resource not found'}), 404)
+    else:
+        print request.environ
+        response = DBInterfacer.take_in_projects(request)
+        response = make_response(jsonify(response))
+    return add_headers(origin, response)
+
+@app.route('/api/project/<username>/delete', methods=['DELETE'])
+def delete_project(username):
+    user = User.query.filter_by(name = username).first()
+    origin = get_origin(request)
+    if user is None:
+        response = make_response(jsonify({'error': 'resource not found'}), 404)
+    else:
+        print request
+        # response = DBInterfacer.archive_project(request)
+        # response = make_response(jsonify(response))
+    # return add_headers(origin, response)
+
 @app.errorhandler(404)
 def not_found(error):
-    response = make_response(jsonify({'error': 'Not Found'}), 404)
-    return add_headers(response)
+    origin = get_origin(request)
+    response = make_response(jsonify({'error': 'resource not found'}), 404)
+    return add_headers(origin, response)
