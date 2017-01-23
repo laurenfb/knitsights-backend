@@ -78,8 +78,11 @@ def delete_project(username):
     if user is None:
         response = make_response(jsonify({'error': 'resource not found'}), 404)
     else:
-        print request.get_json()
         response = DBInterfacer.archive_project(request.get_json())
+    # again there's surely a better way to do this, but TOO LATE
+    if isinstance(response, int):
+        abort(response)
+    else:
         response = make_response(jsonify(response))
     return add_headers(origin, response)
 
