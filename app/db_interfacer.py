@@ -20,14 +20,13 @@ class DBInterfacer:
 
     @staticmethod
     def archive_project(project):
-        # find the project
-        project = Project.query.filter_by(id = project['id']).first()
+        project_object = Project.query.filter_by(id = project['id']).first()
         # 404 if it's not there
-        if project is None:
+        if project_object is None:
             response = 404
         else:
-            project.archived = True
-            db.session.add(project)
+            project_object.archived = True
+            db.session.add(project_object)
             db.session.commit()
-            response = {'success': project.name + ' archived'}
+            response = {'success': project_object.name + ' archived'}
         return response
