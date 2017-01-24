@@ -73,14 +73,10 @@ def update_projects(username):
         response = make_response(jsonify(response), 200)
     return add_headers(origin, response)
 
-@app.route('/api/project/<username>/delete', methods=['DELETE'])
-def delete_project(username):
-    user = User.query.filter_by(name = username).first()
+@app.route('/api/projects/delete', methods=['PUT'])
+def delete_project():
     origin = get_origin(request)
-    if user is None:
-        response = make_response(jsonify({'error': 'resource not found'}), 404)
-    else:
-        response = DBInterfacer.archive_project(request.get_json())
+    response = DBInterfacer.archive_project(request.get_json())
     # again there's surely a better way to do this, but TOO LATE
     if isinstance(response, int):
         abort(response)
