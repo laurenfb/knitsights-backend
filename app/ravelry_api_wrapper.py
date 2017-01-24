@@ -33,7 +33,7 @@ class APIWrapper:
     @staticmethod
     def sort_projects(projects, userID):
         # I want the projects to come back as an array.
-        to_return = []
+        project_list = []
         for project in projects:
             # project must be finished. 2 is Rav's project_status_id for finshed. 1 is WIP, 3 is hibernating, 4 is frogged, in case that matters later.
             # also, the project needs to not already exist in the database.
@@ -47,8 +47,8 @@ class APIWrapper:
         # then return a list of clusters with projects as lists inside of those.
         clusters = Cluster.query.filter_by(user_id = userID).all()
         for cluster in clusters:
-            to_return.append({"name": cluster.name, "projects": [project.as_dict() for project in Project.query.filter_by(cluster_id = cluster.id).all() if project.time_in_days is not None]})
-        return to_return
+            project_list.append({"name": cluster.name, "projects": [project.as_dict() for project in Project.query.filter_by(cluster_id = cluster.id).all() if project.time_in_days is not None and project.archived != True]})
+        return project_list
 
     @staticmethod
     def is_already_saved(project):
