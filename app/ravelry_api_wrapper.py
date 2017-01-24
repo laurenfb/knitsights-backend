@@ -40,7 +40,7 @@ class APIWrapper:
             # print project["name"]
             if project["project_status_id"] == 2 and not APIWrapper.is_already_saved(project):
                 # it will either have a pattern, or not have a pattern. deal with the projects that don't belong to a pattern first.
-                if project["pattern_name"] is None: # json conversion  in requests makes None into None
+                if project["pattern_name"] is None: # json conversion  in requests makes null into None
                     APIWrapper.sort_proj_no_pattern(project, userID)
                 else:
                     APIWrapper.sort_proj_with_pattern(project, userID)
