@@ -62,6 +62,17 @@ def get_projects(username):
     response = make_response(jsonify(projects))
     return add_headers(origin, response)
 
+@app.route('/api/projects/<username>', methods=['POST'])
+def toggle_imported(username):
+    user = User.query.filter_by(name = username).first()
+    origin = get_origin(request)
+    if user is None:
+        response = make_response(jsonify({'error': 'resource not found'}), 404)
+    else:
+        response = DBInterfacer.mark_imported(user)
+        response = make_response(jsonify(response), 201)
+    return add_headers(origin, response)
+
 @app.route('/api/projects/<username>', methods=['PUT'])
 def update_projects(username):
     user = User.query.filter_by(name = username).first()
