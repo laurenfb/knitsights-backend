@@ -166,7 +166,7 @@ class APIWrapper:
             else:
                 category = "misc"
         else:
-            category = pattern_category['name'].lower() if pattern_category['name'].lower() != "other" else category = "misc"
+            category = pattern_category['name'].lower() if pattern_category['name'].lower() != "other" else "misc"
         return category
 
     @staticmethod
