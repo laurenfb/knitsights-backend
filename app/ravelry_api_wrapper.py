@@ -18,7 +18,7 @@ class APIWrapper:
         if r.status_code == 200:
             if user is None:
                 if user_info.json()["user"]["large_photo_url"] is None:
-                    photo_url = "http://placebeyonce.com/400-400"
+                    photo_url = "https://laurenfb.github.io/knitsights/assets/logo.png"
                 else:
                     photo_url = user_info.json()["user"]["large_photo_url"]
                 user = User(name = current_username, email = "not sure how we're getting this", photo_url = photo_url, imported = True)
@@ -144,6 +144,9 @@ class APIWrapper:
                 category = pattern_category["parent"]["name"].lower()
         else:
             category = name
+
+        if category == "other":
+            category = "misc"
         return category
 
     @staticmethod
