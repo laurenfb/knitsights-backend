@@ -15,7 +15,6 @@ class DBInterfacer:
                 changed_projects.append(p)
                 db.session.add(p)
         db.session.commit()
-        # print changed_projects
         return {'success': [project.as_dict() for project in changed_projects]}
 
     @staticmethod

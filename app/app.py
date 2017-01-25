@@ -16,16 +16,13 @@ from db_interfacer import *
 from config import USERNAME, PASSWORD
 
 def add_headers(origin, response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    # print origin
-    # if origin[-1] == "/":
-    #     origin = origin[:-1]
-    #     # print origin
-    # if origin in ACCEPTABLE_ORIGINS:
-        # if origin ==
-    #     response.headers['Access-Control-Allow-Origin'] = origin
-    # else:
-    #     response = make_response(jsonify({'error': 'unauthorized access'}), 401)
+    # response.headers['Access-Control-Allow-Origin'] = '*'
+    if origin[-1] == "/":
+        origin = origin[:-1]
+    if origin in ACCEPTABLE_ORIGINS:
+        response.headers['Access-Control-Allow-Origin'] = origin
+    else:
+        response = make_response(jsonify({'error': 'unauthorized access'}), 401)
     return response
 
 def get_origin(request):

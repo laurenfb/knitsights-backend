@@ -37,7 +37,6 @@ class APIWrapper:
         for project in projects:
             # project must be finished. 2 is Rav's project_status_id for finshed. 1 is WIP, 3 is hibernating, 4 is frogged, in case that matters later.
             # also, the project needs to not already exist in the database.
-            # print project["name"]
             if project["project_status_id"] == 2 and not APIWrapper.is_already_saved(project):
                 # it will either have a pattern, or not have a pattern. deal with the projects that don't belong to a pattern first.
                 if project["pattern_name"] is None: # json conversion  in requests makes null into None
