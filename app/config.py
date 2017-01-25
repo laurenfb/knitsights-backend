@@ -42,9 +42,9 @@ HEAD = ["earwarmers", "eye mask", "hair accessories", "headband", "headwrap", "k
 # "home items"
 HOME = ["bath mitt", "scrubber", "towel", "washcloth / dishcloth", "bookmark", "coaster", "containers", "automobile", "bathroom", "book cover", "coffee / tea pot", "cup / mug", "electronics", "food cozy", "glasses case", "hanger cover", "hot water bottle", "lip balm", "mature content toys", "sports equipment", "tissue box cover", "curtain", "christmas stocking", "doily", "hanging ornament", "ornamental flower", "picture frame", "wall hanging", "wreath", "lampshade", "medical", "pillow", "potholder", "rug", "sachet", "napkin", "placemat", "table runner", "tablecloth", "cleaning", "cozy", "decorative", "table setting"]
 # "pet items"
-PET_ITEMS = ["accessory", "bedding", "clothing", "other", "toys"]
+PET_ITEMS = ["accessory", "bedding", "clothing", "toys"]
 # "knit components"
-KNIT_COMPONENTS = ["afghan block", "applique / embellishment", "button", "chart", "edging", "floral block", "frog", "insertion", "other", "stitch pattern", "tutorial"]
+KNIT_COMPONENTS = ["afghan block", "applique / embellishment", "button", "chart", "edging", "floral block", "frog", "insertion", "stitch pattern", "tutorial"]
 # "socks"
 MISC_SOCKS = ["booties", "legwarmers", "slippers", "socks", "spats"]
 
