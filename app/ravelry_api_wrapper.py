@@ -153,7 +153,7 @@ class APIWrapper:
     def deal_with_other(pattern_category):
         parent = pattern_category['parent']['name'].lower()
         if parent not in TOP_LEVEL:
-            if parent in ["cleaning", "cozy", "decorative", "table setting"]:
+            if parent in ["cleaning", "cozy", "decorative", "table setting", "home"]:
                 category = "home items"
             elif parent in ["craft", "softies"]:
                 category = "toys and hobbies"
@@ -166,7 +166,7 @@ class APIWrapper:
             else:
                 category = "misc"
         else:
-            category = pattern_category['name'].lower()
+            category = pattern_category['name'].lower() if pattern_category['name'].lower() != "other" else category = "misc"
         return category
 
     @staticmethod
