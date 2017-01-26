@@ -185,6 +185,6 @@ class APIWrapper:
     @staticmethod
     def photo_check(project):
         if project["first_photo"] is None:
-            return "http://placebeyonce.com/250-250"
+            return "https://laurenfb.github.io/knitsights/assets/logo.png"
         else:
             return project["first_photo"]["square_url"]
